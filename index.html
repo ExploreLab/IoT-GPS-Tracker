@@ -1,0 +1,632 @@
+<html>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Script for stylesheet -->
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+<script src="js/jquery-1.12.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+  <head>
+    <link rel="shortcut icon" href="img/photo.ico">
+    <title>GPS Tracker</title>
+
+
+    <!-- Font Add -->
+    <style>
+      body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+      body {font-size:16px;}
+      .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+      .w3-half img:hover{opacity:1}
+    </style>    
+    
+    <!-- Header -->
+    <!-- <header class="w3-container w3-theme w3-padding" id="myHeader"> -->
+    <header class="w3-container w3-col w3-blue" id="myHeader">
+      <i onclick="w3_open()" class="fa fa-bars w3-xlarge w3-opennav"></i>
+      <div class="w3-center">
+      <h4>Internet of Things</h4>
+      <h1 class="w3-xxxlarge w3-animate-bottom">BUILT by i-Juk.C</h1>
+        <div class="w3-padding-32">
+          <button class="w3-btn w3-xlarge w3-dark-grey w3-hover-light-grey" onclick="document.getElementById('id01').style.display='block'" style="font-weight:900;">About me</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Modal -->
+    <div id="id01" class="w3-modal">
+      <div class="w3-modal-content w3-card-8 w3-animate-top">
+        <header class="w3-container w3-theme-l1">
+          <span onclick="document.getElementById('id01').style.display='none'" class="w3-closebtn">?</span>
+          <h4>Because we can</h4>
+          <h5>a proposed development of the Internet in which everyday objects have network connectivity, allowing them to send and receive data.<i class="fa fa-smile-o"></i></h5>
+        </header>
+        <div class="w3-padding">
+          <!-- <p>Cool huh? Ok, enough teasing around..</p> -->
+          <!-- <p>Go to our <a class="w3-btn" href="/w3css/default.asp">W3.CSS Tutorial</a> to learn more!</p> -->
+          <p>The IoTs's easy,  you can do it now..</p>
+          <p>Go to our <a class="w3-btn" href="https://www.myelectronicslab.com/?s=Jukrapun+Chitpong" target="_blank" >my Article</a> to learn more!</p>
+        </div>
+        <footer class="w3-container w3-theme-l1">
+          <p>Electrical Engineering Enterprise Group</p>
+        </footer>
+      </div>
+    </div>
+
+    <div class="w3-row">
+      <!-- <h4> -->
+        <div class="w3-col w3-container m2  w3-red"><p>Red</p></div>
+        <div class="w3-col w3-container m2 w3-pink"><p>Pink</p></div>
+        <div class="w3-col w3-container m2 w3-blue-grey"><p>Blue Grey</p></div>
+        <div class="w3-col w3-container m2 w3-teal"><p>Teal</p></div>
+        <div class="w3-col w3-container m2 w3-yellow"><p>Yellow</p></div>
+        <div class="w3-col w3-container m2 w3-orange"><p>Orange</p></div>
+      <!-- </h4> -->
+    </div>
+
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <!-- Button Style -->
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 50%;
+      }
+      .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: black;
+        padding: 6px 24px;
+        /*padding: 16px 32px;*/
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+        margin: 4px 2px;
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+        border-radius: 6px;
+        /*font-weight: bold;*/
+      }
+      .button1 {
+          background-color: white;
+          color: black;
+          border: 2px solid #4CAF50;
+      }
+      .button1:hover {
+          background-color: #4CAF50;
+          color: white;
+      }
+      .button2 {
+          background-color: white;
+          color: black;
+          border: 2px solid #008CBA;
+      }
+      .button2:hover {
+          background-color: #008CBA; /*e7e7e7*/
+          color: white;         
+      }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      // TODO: Replace with your project's customized code snippet
+      var config = {
+        apiKey: "<API_KEY>",
+        authDomain: "<PROJECT_ID>.firebaseapp.com",
+        databaseURL: "https://<DATABASE_NAME>.firebaseio.com",
+        storageBucket: "<BUCKET>.appspot.com",
+        messagingSenderId: "<SENDER_ID>",
+      };
+      firebase.initializeApp(config);
+    </script>    
+
+    <!-- Firebase -->
+    <!-- ***********************************************************************************************************************
+         * TODO(DEVELOPER): Paste the initialization snippet from: Firebase Console > Overview > Add Firebase to your web app. *
+         *********************************************************************************************************************** -->
+    <script type="text/javascript">
+
+      /**
+       * Handles the sign in button press.
+       */
+      function toggleSignIn() {
+        if (firebase.auth().currentUser) {
+          // [START signout]
+          firebase.auth().signOut();
+          // [END signout]
+        } else {
+          var email = document.getElementById('email').value;
+          var password = document.getElementById('password').value;
+          if (email.length < 4) {
+            alert('Please enter an email address.');
+            return;
+          }
+          if (password.length < 4) {
+            alert('Please enter a password.');
+            return;
+          }
+          // Sign in with email and pass.
+          // [START authwithemail]
+          firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // [START_EXCLUDE]
+            if (errorCode === 'auth/wrong-password') {
+              alert('Wrong password.');
+            } else {
+              console.error(error);
+            }
+            // [END_EXCLUDE]
+          });
+          // [END authwithemail]
+        }
+        document.getElementById('quickstart-sign-in').disabled = true;
+      }
+
+      /**
+       * Handles registering callbacks for the auth status.
+       *
+       * This method registers a listener with firebase.auth().onAuthStateChanged. This listener is called when
+       * the user is signed in or out, and that is where we update the UI.
+       *
+       * When signed in, we also authenticate to the Firebase Realtime Database.
+       */
+      function initApp() {
+        // Listening for auth state changes.
+        // [START authstatelistener]
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            // User is signed in.
+            var displayName = user.displayName;
+            var email = user.email;
+            var emailVerified = user.emailVerified;
+            var photoURL = user.photoURL;
+            var isAnonymous = user.isAnonymous;
+            var uid = user.uid;
+            var refreshToken = user.refreshToken;
+            var providerData = user.providerData;
+            // [START_EXCLUDE silent]
+            document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+            document.getElementById('quickstart-sign-in').textContent = 'Sign out';
+            document.getElementById('quickstart-account-details').textContent = JSON.stringify({
+              // displayName: displayName,
+              // email: email,
+              // emailVerified: emailVerified,
+              // photoURL: photoURL,
+              // isAnonymous: isAnonymous,
+              // uid: uid,
+              // refreshToken: refreshToken,
+              // providerData: providerData
+              email: email
+            }, null, '  ');
+            // [END_EXCLUDE]
+          } else {
+            // User is signed out.
+            // [START_EXCLUDE silent]
+            document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+            document.getElementById('quickstart-sign-in').textContent = 'Sign in';
+            document.getElementById('quickstart-account-details').textContent = 'null';
+            // [END_EXCLUDE]
+          }
+          // [START_EXCLUDE silent]
+          document.getElementById('quickstart-sign-in').disabled = false;
+          // [END_EXCLUDE]
+        });
+        // [END authstatelistener]
+
+        document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
+      }
+
+      window.onload = function() {
+        initApp();
+      };
+    </script>    
+
+    <!-- GEOlocation -->
+    <script>
+      // This example enables Sign In by loading the Maps API with the signed_in
+      // parameter set to true. For example:
+      // https://maps.googleapis.com/maps/api/js?signed_in=true&callback=initMap      
+
+      function initMap(x,y) {    
+        var myLatLng = {lat: x, lng: y}; 
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 17, /*12*/
+          center: {lat: x, lng: y} 
+        });
+
+        var marker = new google.maps.Marker({        
+          position: myLatLng,
+          map: map,
+          icon: IconEnterprise,
+          // title: 'NEO-6M GPS module1.1' 
+        });
+      }
+
+      var IconEnterprise = 'https://firebasestorage.googleapis.com/v0/b/aboutme-d23df.appspot.com/o/Icon-enterprise.png?alt=media&token=c76e2c34-2f06-46ea-974a-5fcf0aa5f869';
+      var IconCar = "https://firebasestorage.googleapis.com/v0/b/aboutme-d23df.appspot.com/o/img%2FUntitled-1.png?alt=media&token=1d24dcfd-ebe6-4a8f-af1d-0d4e5988661b";
+      // Icon credit
+
+      var markers = [];
+      var map;
+
+      function drop2() {
+        firebase.database().ref().child("GPS").on("value", snap => {
+          var lat_value1 = snap.val()["TrackLAT"]*1;
+          var lng_value1 = snap.val()["TrackLNG"]*1;         
+          var mark2 = [{lat:lat_value1,lng: lng_value1}];
+
+          clearMarkers();
+          for (var i = 0; i < mark2.length; i++) {
+            addMarkerWithTimeout2(mark2[i], i * 200); 
+            console.log(mark2[i]);
+          }                
+        });
+      }      
+
+      function addMarkerWithTimeout2(position, timeout) {
+        clearMarkers();
+        window.setTimeout(function() {
+          markers.push(new google.maps.Marker({
+            icon: IconCar,
+            title: 'NEO-6M GPS module1.2',
+            position: position,
+            map: map,
+          }));
+        }, timeout);
+      }      
+
+      function clearMarkers() {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+        markers = [];
+      }         
+
+      // Try HTML5 geolocation.
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            console.log(position.coords.latitude);
+            console.log(position.coords.longitude);
+
+    			clearMarkers();
+    			firebase.database().ref().child("GPS").on("value", snap => {
+    				var lat_value = snap.val()["OfficeLAT"]*1;
+    				var lng_value = snap.val()["OfficeLNG"]*1;
+            initMap(lat_value, lng_value);
+            });
+          })
+      } 
+    </script>
+
+  </head>
+
+  <body>
+
+    <!-- Class for Count -->
+    <div class="w3-center w3-display-container w3-blue-grey"> 
+      <!-- <div class="center"> -->
+      <div class="w3-row-padding w3-margin-top " >
+        <div class="w3-third w3-justify w3-center">   
+          <br>
+          Status CAR[<span id="CAR1_ST" style="color:black;font-weight:bold">Status CAR</span>]<hr>  
+          <div class="center">
+            <img id="CAR1_IMG" src="img/car-27-24-0.png" width="64" height="64"> 
+          </div><hr>  
+        </div>
+        <div class="w3-third w3-justify w3-center"> <br><hr>
+        <h4 ><i class="fa fa-windows" aria-hidden="true"> Running Time</i></h4>  
+          <h3>
+            <span id="Amount" style="color:white;font-weight:bold">running time</span>
+          </h3> <hr>  
+      </div>
+    </div>  
+    
+    <!-- Class for  TIME and LOCATION -->
+    <div class="w3-center w3-display-container w3-lime">
+      <h3>
+      DATE: 
+        <span id="Month" style="color:black;font-weight:bold">Month</span>
+        <span id="Day" style="color:black;font-weight:bold">Day</span>,
+        <span id="Year" style="color:black;font-weight:bold">Year</span><br>      
+      TIME [
+        <span id="TIMEhour" style="color:black;font-weight:bold">Hour</span> :
+        <span id="TIMEminute" style="color:black;font-weight:bold">Minute</span> ]<br>
+      Location [ 
+        <span id="LAT1" style="color:black;font-weight:bold">Latitude</span>,
+        <span id="LNG1" style="color:black;font-weight:bold">Longitude</span> ]<br>
+      </h3>
+      <button id="dropMark2" class="button button2" onclick="drop2()">Drop Markers</button>
+      <button id="ClearMark" class="button button2" onclick="clearMarkers()">Clear Markers</button>
+    </div>
+
+    <div id="map"></div>
+      <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=Google_Maps_JavaScript_API&signed_in=true&callback=initMap">
+        
+        // YOUR_API_KEY = AIzaSyCpI7U-wLtBQAnX_60cbIfhfM-OCQ11YXo        
+        //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpI7U-wLtBQAnX_60cbIfhfM-OCQ11YXo&signed_in=true&callback=initMap">
+        // https://developers.google.com/maps/documentation/javascript/signedin
+      </script>
+
+      
+
+    <!-- TAB: Stay Connected -->
+      <hr>
+      <h2 class="w3-center">Stay Connected</h2>
+      <div class="w3-container">
+        <div class="w3-border">
+          <ul class="w3-navbar w3-light-grey">
+            <li><a class="w3-btn testbtn" onclick="openCity(event, 'Facebook')">Facebook</a></li>
+            <li><a class="w3-btn testbtn" onclick="openCity(event, 'Gmail')">E-mail</a></li>
+            <li><a class="w3-btn testbtn" onclick="openCity(event, 'Twitter')">Twitter</a></li>
+            <li><a class="w3-btn testbtn" onclick="openCity(event, 'Authen')">Authen</a></li>
+          </ul>
+            <div id="Facebook" class="w3-container city w3-animate-opacity">
+              <h2>EEEG.CH</h2>
+              <img src="img/facebook.png" alt="boy" class="w3-image" width=30% height=30%> <!-- 1361x495 -->
+            </div>
+
+            <div id="Gmail" class="w3-container city w3-animate-opacity">
+              <!-- <h2>JUKRAPUN.CH@EEEG</h2> -->
+              <img src="img/Gmail.png" alt="boy" class="w3-image" width=30% height=30%>
+            </div>
+
+            <div id="Twitter" class="w3-container city w3-animate-opacity">
+              <h2>@ChJukrapun</h2>
+              <img src="img/twitter.png" alt="boy" class="w3-image" width=30% height=30%>
+            </div>
+        </div>
+      </div>
+      
+    <div id="Authen" class="w3-container city w3-animate-opacity">
+      <div class="w3-container" id="Authen" style="margin-top:20px">
+        <h1 class="w3-xxxlarge w3-text-blue"><b>Authentication.</b></h1>
+        <div class="w3-light-grey w3-container w3-padding-32" style="margin-top:20px;padding-right:58px">
+          <!-- Header section containing title -->
+          <header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
+            <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+              <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop">
+              </div>
+            </div>
+          </header>
+
+          <main class="mdl-layout__content mdl-color--grey-100">
+            <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
+              <!-- Container for the demo -->
+              <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+                <div class="mdl-card__title mdl-color--light-blue-600 mdl-color-text--white">
+                  <h2 class="mdl-card__title-text">SIGN-IN METHOD: Email &amp; Password</h2>
+                </div>
+                <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+                  <p>Enter an email and password below and either sign in to an existing account</p>
+
+                  <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="email" name="email" placeholder="Email"/>
+                  &nbsp;&nbsp;&nbsp;
+                  <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password" name="password" placeholder="Password"/>
+                  <br/><br/>
+                  <button disabled class="mdl-button mdl-js-button mdl-button--raised" id="quickstart-sign-in" name="signin">Sign In</button>
+                  &nbsp;&nbsp;&nbsp;
+
+                  <!-- Container where we'll display the user details -->
+                  <div class="quickstart-user-details-container">
+                    Firebase sign-in status: <span id="quickstart-sign-in-status">Unknown</span>
+                    <div>Firebase auth <code>currentUser</code> object value:</div>            
+                    <pre><code id="quickstart-account-details">null</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>   
+      </div>
+    </div>    
+
+    <hr><br>
+
+    <!-- Footer -->
+    <footer class="w3-container w3-theme-dark w3-padding-16">
+      <h3>Developmentally</h3>
+      <p>Powered by <a href="http://www.facebook.com/eeeg.ch" target="_blank">Jukrapun Chitpong</a></p>
+      <p>Credit: <a href="http://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+      <div style="position:relative;bottom:55px;" class="w3-tooltip w3-right">
+        <span class="w3-text w3-theme-light w3-padding">Go To Top</span> 
+        <a class="w3-text-white" href="#myHeader"><span class="w3-xlarge">
+        <i class="fa fa-chevron-circle-up"></i></span></a>
+      </div>
+      <div style="position:relative;bottom:55px;" class="w3-tooltip w3-right">
+        <span class="w3-text w3-theme-light w3-padding">Prepare</span> 
+        <a class="w3-text-white" href="https://aboutme-d23df.firebaseio.com/map-firebase-Importing.html"target="_blank"><span class="w3-xlarge">
+        <i class="fa fa-chevron-circle-up"></i></span></a>
+      </div>      
+      Electrical Engineering Enterprise Group
+    </footer>
+
+    <!-- Script for Sidenav, Tabs, Accordions, Progress bars and slideshows -->
+    <script>
+      // Side navigation
+      function w3_open() {
+          var x = document.getElementById("mySidenav");
+          x.style.width = "100%";
+          x.style.textAlign = "center";
+          x.style.fontSize = "50px";
+          x.style.paddingTop = "10%";
+          x.style.display = "block";
+      }
+      function w3_close() {
+          document.getElementById("mySidenav").style.display = "none";
+      }
+
+      // Tabs
+      function openCity(evt, cityName) {
+        var i;
+        var x = document.getElementsByClassName("city");
+        for (i = 0; i < x.length; i++) {
+           x[i].style.display = "none";
+        }
+        var activebtn = document.getElementsByClassName("testbtn");
+        for (i = 0; i < x.length; i++) {
+            activebtn[i].className = activebtn[i].className.replace(" w3-dark-grey", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " w3-dark-grey";
+      }
+
+      var mybtn = document.getElementsByClassName("testbtn")[0];
+      mybtn.click();
+
+      // Accordions
+      function myAccFunc(id) {
+          var x = document.getElementById(id);
+          if (x.className.indexOf("w3-show") == -1) {
+              x.className += " w3-show";
+              x.previousElementSibling.className += " w3-dark-grey";
+          } else {
+              x.className = x.className.replace(" w3-show", "");
+              x.previousElementSibling.className =
+              x.previousElementSibling.className.replace(" w3-dark-grey", "");
+          }
+      }
+
+      // Slideshows
+      var slideIndex = 1;
+
+      function plusDivs(n) {
+      slideIndex = slideIndex + n;
+      showDivs(slideIndex);
+      }
+
+      function move() {
+        var elem = document.getElementById("myBar");
+        var width = 1;
+        var id = setInterval(frame, 10);
+        function frame() {
+          if (width == 100) {
+            clearInterval(id);
+          } else {
+            width++;
+            elem.style.width = width + '%';
+            document.getElementById("demoprgr").innerHTML = width * 1  + '%';
+          }
+        }
+      }
+    </script>                           
+
+    </br></br><hr></br>
+
+    <!-- Script for Date and Time from nodeMCU using Firebase -->
+    <script>
+
+      var Month = document.getElementById("Month");
+      var db_Month = firebase.database().ref().child("TinyGPSPlusDAY").child("month");
+      db_Month.on("value", snap => {
+          Month.innerText = snap.val();
+          if (Month.innerText == 1) {
+            Month.innerText = "January";
+          } else if ((Month.innerText == 2)){
+            Month.innerText = "Febuary";
+          } else if ((Month.innerText == 3)){
+            Month.innerText = "March";
+          } else if ((Month.innerText == 4)){
+            Month.innerText = "April";
+          } else if ((Month.innerText == 5)){
+            Month.innerText = "May";
+          } else if ((Month.innerText == 6)){
+            Month.innerText = "June";
+          } else if ((Month.innerText == 7)){
+            Month.innerText = "July";
+          } else if ((Month.innerText == 8)){
+            Month.innerText = "August";
+          } else if ((Month.innerText == 9)){
+            Month.innerText = "September";
+          } else if ((Month.innerText == 10)){
+            Month.innerText = "October";
+          } else if ((Month.innerText == 11)){
+            Month.innerText = "November";
+          } else if ((Month.innerText == 12)){
+            Month.innerText = "December";
+          } else{Month.innerText = "month error";}
+      });
+
+      var Day = document.getElementById("Day");
+      var db_Day = firebase.database().ref().child("TinyGPSPlusDAY").child("day");
+      db_Day.on("value", snap => {
+          Day.innerText = snap.val();
+      });
+
+      var Year = document.getElementById("Year");
+      var db_Year = firebase.database().ref().child("TinyGPSPlusDAY").child("year");
+      db_Year.on("value", snap => {
+          Year.innerText = snap.val();
+      });       
+
+      var db_AmountA = document.getElementById("Amount");
+      var db_ref = firebase.database().ref().child("Amount").child("A");
+      db_ref.on("value", snap => {
+          db_AmountA.innerText = snap.val();
+          var cmdCB = db_AmountA.innerHTML;
+          var cm_AmountA = new Intl.NumberFormat('arab').format(cmdCB); /*en-IN*/
+          db_AmountA.innerText = cm_AmountA;
+          /*https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat*/
+
+      });
+
+      var TIMEhour = document.getElementById("TIMEhour");
+      var db_refH = firebase.database().ref().child("TinyGPSPlusTIME").child("hour"); 
+      db_refH.on("value", snap => {
+          TIMEhour.innerText = snap.val();
+      });       
+
+      var TIMEminute = document.getElementById("TIMEminute");
+      var db_refM = firebase.database().ref().child("TinyGPSPlusTIME").child("minute"); 
+      db_refM.on("value", snap => {
+          TIMEminute.innerText = snap.val();
+      });      
+
+      var LAT = document.getElementById("LAT1");
+      var db_refLAT = firebase.database().ref().child("GPS").child("TrackLAT"); 
+      db_refLAT.on("value", snap => {
+          LAT.innerText = snap.val();
+      });            
+
+      var LNG1 = document.getElementById("LNG1");
+      var db_refLNG1 = firebase.database().ref().child("GPS").child("TrackLNG"); 
+      db_refLNG1.on("value", snap => {
+          LNG1.innerText = snap.val();
+      });
+       
+    </script>
+
+    <script>
+      var AC1_1 = document.getElementById("CAR1_ST");
+      var db_refAC1_1 = firebase.database().ref().child("Amount").child("B"); 
+      db_refAC1_1.on("value", snap => {
+          AC1_1.innerText = snap.val();
+
+            if (AC1_1.innerText == 1) {
+              AC1_1.innerText = " Running ";
+              var picAC11;
+                 picAC11 = "img/car-27-24-1.png"   
+                 document.getElementById('CAR1_IMG').src = picAC11;                     
+              } else if ((AC1_1.innerText == 0)){
+                AC1_1.innerText = " Running ";
+                var picAC10;     
+                   picAC10 = "img/car-27-24-0.png"    
+                   document.getElementById('CAR1_IMG').src = picAC10;
+            } else {
+              AC1_1.innerText = " Stoping ";
+            }
+      });      
+
+      //Credit: https://www.iconsdb.com/royal-blue-icons/car-27-icon.html
+    </script>     
+  </body>
+
+</html>
