@@ -84,6 +84,9 @@ Add your static files to your deploy directory (the default is public)
 
 ### Finally
 ##### https://iot-gps-tracker.firebaseapp.com
+##### Log in by USER
+##### User: user@eeeg.com
+##### Password: P@ssw0rd
 
 [![](http://img.youtube.com/vi/54FfeH21ptk/0.jpg)](http://www.youtube.com/watch?v=54FfeH21ptk "IoT-GPS-Tracker")
 
