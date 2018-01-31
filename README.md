@@ -85,4 +85,5 @@ Add your static files to your deploy directory (the default is public)
 ### Finally
 ##### https://iot-gps-tracker.firebaseapp.com
 
-[linkname](https://www.youtube.com/watch?v=54FfeH21ptk&list=PLdvWd-hs3E0zPaviYZ-lesKmc65o-i-Ye)
+[![](http://img.youtube.com/vi/54FfeH21ptk/0.jpg)](http://www.youtube.com/watch?v=54FfeH21ptk "IoT-GPS-Tracker")
+
